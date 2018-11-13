@@ -24,23 +24,25 @@ function routement(msg)
 
 		return response
 	else
-		response.msg = "error"
-		response.err = "routment not found"
-
-		response = json.encode(response)
-
-		return response
+		
 	end
 
 end
 
 -- function that starts the treatment
 function router.treatment(msg)
-	totreat = json.decode(msg)
 	returnmsg = ""
+	local status, totreat = pcall(json.decode, msg)
 
-	if not totreat then
-		return nil, "invalid message"
+	if not totreat or not status then
+		local response = {}
+		
+		response.msg = "error"
+		response.err = "routment not found"
+
+		response = json.encode(response)
+
+		return response
 	end
 
 	if totreat.requirement then
