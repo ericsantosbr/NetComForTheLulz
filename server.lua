@@ -8,6 +8,8 @@ local socket = require "socket"
 local router = require "router"
 local json = require "json"
 
+local time = ""
+
 local server, ip = socket.dns.toip("localhost"), 80324
 
 local server, err = assert(socket.bind(server, ip))
@@ -18,6 +20,8 @@ if err then
 	return 1
 end
 
+local log = io.open("log.txt", 'a+', 'r')
+log:setvbuf("no")
 
 -- main server loop
 while true do
@@ -26,13 +30,13 @@ while true do
 	client:settimeout(0)
 
 	local clientIp, clientPort = client:getsockname()
-	-- local loginput = log:write("Requirement coming from", clientIp, "port", clientPort)
 	
 	msg = client:receive()
 
-	local log = io.open("log.txt", 'a+')
-	log:write("Requirement ", json.decode(msg)["requirement"]," coming from ", clientIp, " port ", clientPort, "\n")
-	log:close()
+	time = os.date("!*t")
+
+	log:write("[", time.hour, ":", time.min, ":", time.sec, "]", "Requirement \"", "\" coming from ", clientIp, " port ", clientPort, "\n")
+
 	-- tries to do an requirement treatment
 	response, err = assert(router.treatment(msg))
 
@@ -44,4 +48,5 @@ while true do
 	client:close()
 end
 
+log:close()
 server:close()
