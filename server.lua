@@ -38,7 +38,7 @@ while true do
 	log:write("[", time.hour, ":", time.min, ":", time.sec, "]", "Requirement \"", "\" coming from ", clientIp, " port ", clientPort, "\n")
 
 	-- tries to do an requirement treatment
-	response, err = assert(router.treatment(msg))
+	response = router.treatment(msg)
 
 	-- sends the response to the client and then prints it
 	client:send(response .. "\n")
